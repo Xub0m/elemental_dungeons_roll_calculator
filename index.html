@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeus Armor Roll Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .panel {
+            background: #2a2a2a;
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .left-panel {
+            flex: 1;
+        }
+
+        .right-panel {
+            flex: 1;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #3a3a3a;
+            border: 2px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #4a4a4a;
+            border-color: #666;
+            color: #ff6b6b;
+        }
+
+        .tab.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            background: #3a3a3a;
+            border: 2px solid #555;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #777;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: #3a3a3a;
+            border: 2px solid #555;
+            border-radius: 5px;
+            outline: none;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        #upgrade-display {
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s;
+            width: 100%;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .armor-image {
+            width: 200px;
+            height: 200px;
+            background: #3a3a3a;
+            border: 3px solid #555;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .armor-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .corrupt-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .roll-info {
+            background: #3a3a3a;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .roll-value {
+            font-size: 56px;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 15px;
+        }
+
+        .roll-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: #2a2a2a;
+            border-radius: 5px;
+        }
+
+        .detail-label {
+            color: #999;
+        }
+
+        .detail-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .corrupted-badge {
+            display: inline-block;
+            background: #dc2626;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .stats-section {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .stats-title {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 13px;
+        }
+
+        .stat-label {
+            color: #999;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel left-panel">
+            <div class="tabs">
+                <div class="tab active" data-tab="armor">Armor</div>
+                <div class="tab disabled" data-tab="weapon">Weapon</div>
+            </div>
+
+            <div id="armor-form">
+                <div class="form-group">
+                    <label>Zeus Armor Type:</label>
+                    <select id="armor-type">
+                        <option value="">Select...</option>
+                        <option value="helmet">Zeus Helmet</option>
+                        <option value="chest">Zeus Chestplate</option>
+                        <option value="leggings">Zeus Leggings</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Current HP:</label>
+                    <input type="number" id="current-hp" min="1" max="10000" placeholder="Ex: 2065" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label>Upgrade Level: <span id="upgrade-display">+0</span></label>
+                    <input type="range" id="upgrade-level" min="0" max="50" value="0" style="width: 100%; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; color: #666; font-size: 12px; margin-top: 5px;">
+                        <span>+0</span>
+                        <span>+25</span>
+                        <span>+50</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is-corrupted">
+                        <label for="is-corrupted" style="margin-bottom: 0;">Corrupted</label>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateRoll()">Calculate Roll</button>
+            </div>
+        </div>
+
+        <div class="panel right-panel">
+            <div class="result" id="result">
+                <div class="armor-image" id="armor-icon">🛡️</div>
+                <div class="roll-info">
+                    <div class="roll-value" id="roll-display">Roll ?</div>
+                    <div class="roll-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Type:</span>
+                            <span class="detail-value" id="result-type">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">HP:</span>
+                            <span class="detail-value" id="result-hp">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Upgrade:</span>
+                            <span class="detail-value" id="result-upgrade">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Corrupted:</span>
+                            <span class="detail-value" id="result-corrupted">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <div class="stats-title">📊 Roll Statistics</div>
+                        <div class="stat-item">
+                            <span class="stat-label">Calculated Base:</span>
+                            <span class="stat-value" id="calc-base">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Base Value (Roll):</span>
+                            <span class="stat-value" id="base-value">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Difference:</span>
+                            <span class="stat-value" id="difference">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Deviation:</span>
+                            <span class="stat-value" id="deviation">-</span>
+                        </div>
+                    </div>
+
+                    <div id="corrupted-badge" style="display: none;">
+                        <span class="corrupted-badge">⚠️ CORRUPTED ITEM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         const armorIcons = {
+            helmet: 'img/armor/helmet.png',
+            chest: 'img/armor/chestplate.png',
+            leggings: 'img/armor/leggings.png'
+        };
+
+        const corruptEffect = 'img/armor/corrupt_effect.png';
+
+        const armorNames = {
+            helmet: 'Zeus Helmet',
+            chest: 'Zeus Chestplate',
+            leggings: 'Zeus Leggings'
+        };
+
+        // Tabelas oficiais de Base Rolls
+        const baseRolls = {
+            helmet: [787.000, 794.900, 802.800, 810.700, 818.600, 826.500, 834.400, 842.300, 850.200, 858.100, 866.000],
+            chest: [708.000, 715.100, 722.200, 729.300, 736.400, 743.500, 750.600, 757.700, 764.800, 771.900, 779.000],
+            leggings: [682.500, 689.250, 696.000, 702.750, 709.500, 716.250, 723.000, 729.750, 736.500, 743.250, 750.000]
+        };
+
+        // Atualizar display do upgrade em tempo real
+        const upgradeSlider = document.getElementById('upgrade-level');
+        const upgradeDisplay = document.getElementById('upgrade-display');
+        
+        upgradeSlider.addEventListener('input', function() {
+            upgradeDisplay.textContent = '+' + this.value;
+        });
+
+        function findClosestRoll(calculatedBase, armorType) {
+            const rolls = baseRolls[armorType];
+            let closestRoll = 1;
+            let minDifference = Math.abs(calculatedBase - rolls[0]);
+
+            for (let i = 1; i < rolls.length; i++) {
+                const difference = Math.abs(calculatedBase - rolls[i]);
+                if (difference < minDifference) {
+                    minDifference = difference;
+                    closestRoll = i + 1;
+                }
+            }
+
+            return closestRoll;
+        }
+
+        function calculateRoll() {
+            const armorType = document.getElementById('armor-type').value;
+            const currentHp = parseFloat(document.getElementById('current-hp').value);
+            const upgradeLevel = parseInt(document.getElementById('upgrade-level').value);
+            const isCorrupted = document.getElementById('is-corrupted').checked;
+
+            if (!armorType || !currentHp || isNaN(currentHp)) {
+                alert('Please fill all required fields correctly!');
+                return;
+            }
+
+            // Fórmula correta:
+            // UM = 1.02499952375812 (Upgrade Multiplier)
+            // CM = 1.7872378244314273 (Corruption Multiplier)
+            const UM = 1.02499952375812;
+            const CM = 1.7872378244314273;
+            
+            const upgradeFactor = Math.pow(UM, upgradeLevel);
+            const corruptionMultiplier = isCorrupted ? CM : 1.0;
+            const calculatedBase = currentHp / (upgradeFactor * corruptionMultiplier);
+
+            // Encontrar o roll mais próximo
+            const detectedRoll = findClosestRoll(calculatedBase, armorType);
+            const baseValue = baseRolls[armorType][detectedRoll - 1];
+            const difference = Math.abs(calculatedBase - baseValue);
+            const deviation = (difference / baseValue) * 100;
+
+            // Atualizar interface
+            const armorIconElement = document.getElementById('armor-icon');
+            const iconPath = armorIcons[armorType];
+            
+            // Verificar se é uma imagem (caminho) ou emoji
+            if (iconPath && (iconPath.includes('.png') || iconPath.includes('.jpg') || iconPath.includes('.jpeg'))) {
+                // Criar HTML com a imagem da armadura
+                let html = `<img src="${iconPath}" alt="${armorNames[armorType]}" onerror="this.parentElement.innerHTML='🛡️'">`;
+                
+                // Se for corrupted, adicionar o efeito de corrupção por cima
+                if (isCorrupted) {
+                    html += `<img src="${corruptEffect}" class="corrupt-overlay" alt="Corrupt Effect">`;
+                }
+                
+                armorIconElement.innerHTML = html;
+            } else {
+                armorIconElement.textContent = iconPath || '🛡️';
+            }
+            
+            document.getElementById('roll-display').textContent = 'Roll ' + detectedRoll;
+            document.getElementById('result-type').textContent = armorNames[armorType];
+            document.getElementById('result-hp').textContent = currentHp.toFixed(1);
+            document.getElementById('result-upgrade').textContent = '+' + upgradeLevel;
+            document.getElementById('result-corrupted').textContent = isCorrupted ? 'Yes' : 'No';
+            
+            // Estatísticas
+            document.getElementById('calc-base').textContent = calculatedBase.toFixed(2);
+            document.getElementById('base-value').textContent = baseValue.toFixed(2);
+            document.getElementById('difference').textContent = difference.toFixed(2);
+            document.getElementById('deviation').textContent = deviation.toFixed(3) + '%';
+
+            const corruptedBadge = document.getElementById('corrupted-badge');
+            corruptedBadge.style.display = isCorrupted ? 'block' : 'none';
+
+            // Colorir o roll baseado na qualidade (1-11)
+            const rollDisplay = document.getElementById('roll-display');
+            if (detectedRoll >= 10) {
+                rollDisplay.style.color = '#4ade80'; // Verde - Roll 10-11
+            } else if (detectedRoll >= 7) {
+                rollDisplay.style.color = '#fbbf24'; // Amarelo - Roll 7-9
+            } else if (detectedRoll >= 4) {
+                rollDisplay.style.color = '#fb923c'; // Laranja - Roll 4-6
+            } else {
+                rollDisplay.style.color = '#ef4444'; // Vermelho - Roll 1-3
+            }
+
+            document.getElementById('result').classList.add('show');
+        }
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
