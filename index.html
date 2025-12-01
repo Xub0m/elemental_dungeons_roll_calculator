@@ -907,6 +907,8 @@
                 return;
             }
 
+            document.getElementById('weapon-result').classList.remove('show');
+
             const upgradeFactor = 1 + (upgradeLevel / 21);
             const corruptionMultiplier = isCorrupted ? 1.5 : 1.0;
             const totalMultiplier = upgradeFactor * corruptionMultiplier;
@@ -999,6 +1001,8 @@
                 alert('Please fill all required fields correctly!');
                 return;
             }
+
+            document.getElementById('armor-result').classList.remove('show')
 
             const reforgeMultipliers = {
                 godly: 1.5,
