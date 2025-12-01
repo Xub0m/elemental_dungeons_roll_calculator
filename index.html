@@ -977,6 +977,19 @@
             document.getElementById("calculations-made-value").innerText = valorAtual;
         }
 
+        async function loadCounterValue() {
+            const url = "https://api.jsonbin.io/v3/b/692e179643b1c97be9d16ff4";
+            const accessKey = "$2a$10$P1O16rB3q/nFoJ4xEzTPuecx4GCRmIH.7hbauOhh1iLcdsqGs7f5q";
+
+            let req = await fetch(url, {
+                headers: { "X-Master-Key": accessKey }
+            });
+            let data = await req.json();
+
+            document.getElementById("calculations-made-value").innerText =
+                data.record.cardsGerados;
+        }
+
         function calculateRollArmor() {
             const armorType = document.getElementById('armor-type').value;
             const currentHp = parseFloat(document.getElementById('current-hp').value);
@@ -1160,6 +1173,7 @@
             });
         });
 
+        window.onload = loadCounterValue;
 
     </script>
 </body>
