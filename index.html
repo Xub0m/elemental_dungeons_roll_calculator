@@ -218,6 +218,13 @@
             backdrop-filter: blur(15px);
         }
 
+        .calculate-counter {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+        }
+
         @keyframes float {
 
             0%,
@@ -658,7 +665,14 @@
         <small style="opacity: 0.7;">Version 5.0</small>
     </div>
 
+    <div class="calculate-counter">
+        <br>
+        <small style="opacity: 1;">Calculate Count:</small>
+        <br>
+    </div>
+
     <div class="container">
+
         <div class="panel left-panel">
             <div class="tabs">
                 <div class="tab active" data-tab="armor"><span>Armor</span></div>
@@ -701,6 +715,16 @@
                 </div>
 
                 <button class="calculate-btn" onclick="findType('armor-form')">Calculate Roll</button>
+
+                <div class="form-group">
+                    <br></br>
+                    <div class="checkbox-group">
+                        <label id="calculations-made-label" style="margin-bottom: 0;">Calculations Made:
+                            <span id="calculations-made-value">0</span>
+                        </label>
+                    </div>
+                </div>
+
             </div>
 
             <!-- !doom 20139 20 hasty y -->
@@ -801,7 +825,7 @@
                     <div class="roll-details">
                         <div class="detail-row">
                             <span class="detail-label">Warning:</span>
-                            <span class="detail-value" >The values may not be 100% accurate</span>
+                            <span class="detail-value">The values may not be 100% accurate</span>
                         </div>
                     </div>
 
@@ -837,7 +861,7 @@
                     <div class="roll-details">
                         <div class="detail-row">
                             <span class="detail-label">Warning:</span>
-                            <span class="detail-value" >The values may not be 100% accurate</span>
+                            <span class="detail-value">The values may not be 100% accurate</span>
                         </div>
                     </div>
 
@@ -915,6 +939,18 @@
             else if (type == "weapon-form") {
                 calculateRollWeapon()
             }
+
+            incrementCounter()
+        }
+
+        function incrementCounter() {
+            fetch("https://api.countapi.dev/hit/armaduraGeradorV1/cardsGerados")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("calculations-made-value").innerText = data.value
+                })
+                .catch(error => console.error("Deu erro aqui ao acessar CountAPI:", error))
+
         }
 
         function calculateRollArmor() {
@@ -981,7 +1017,6 @@
             document.getElementById('armor-result').classList.add('show');
         }
 
-
         function findClosestRollWeapon(currentDamage, weaponType, upgradeLevel, reforgeMult, isCorrupted) {
 
             const rolls = baseRolls[weaponType];
@@ -1045,7 +1080,7 @@
             document.getElementById('weapon-roll-display').textContent = 'Roll ' + detectedRoll;
             document.getElementById('weapon-result-type').textContent = weaponType;
             document.getElementById('result-damage').textContent = currentDamage
-             document.getElementById('weapon-result-upgrade').textContent = '+' + upgradeLevel;
+            document.getElementById('weapon-result-upgrade').textContent = '+' + upgradeLevel;
             document.getElementById('weapon-result-corrupted').textContent = isCorrupted ? 'Yes' : 'No';
 
             const corruptedBadge = document.getElementById('weapon-corrupted-badge');
@@ -1066,7 +1101,6 @@
 
             document.getElementById('weapon-result').classList.add('show');
         }
-
 
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function () {
@@ -1102,6 +1136,7 @@
             });
         });
 
+        
     </script>
 </body>
 
