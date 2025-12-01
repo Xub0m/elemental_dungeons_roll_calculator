@@ -655,7 +655,7 @@
         <br>
         <small style="opacity: 1;">Created By Xubom</small>
         <br>
-        <small style="opacity: 0.7;">Version 3.5</small>
+        <small style="opacity: 0.7;">Version 4.0</small>
     </div>
 
     <div class="container">
@@ -667,12 +667,12 @@
 
             <div id="armor-form">
                 <div class="form-group">
-                    <label>Zeus Armor Type:</label>
+                    <label>Furious Zeus Armor Type:</label>
                     <select id="armor-type">
                         <option value="">Select...</option>
-                        <option value="helmet">Zeus Helmet</option>
-                        <option value="chest">Zeus Chestplate</option>
-                        <option value="leggings">Zeus Leggings</option>
+                        <option value="helmet">Furious Zeus Helmet</option>
+                        <option value="chest">Furious Zeus Chestplate</option>
+                        <option value="leggings">Furious Zeus Leggings</option>
                     </select>
                 </div>
 
@@ -788,14 +788,14 @@
                             <span class="stat-label">Base Value (Roll):</span>
                             <span class="stat-value" id="base-value">-</span>
                         </div>
-                        <div class="stat-item">
+                        <!-- <div class="stat-item">
                             <span class="stat-label">Difference:</span>
                             <span class="stat-value" id="difference">-</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Deviation:</span>
                             <span class="stat-value" id="deviation">-</span>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div id="armor-corrupted-badge" style="display: none;">
@@ -815,6 +815,14 @@
                         <div class="detail-row">
                             <span class="detail-label">Damage:</span>
                             <span class="detail-value" id="result-damage">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Upgrade:</span>
+                            <span class="detail-value" id="weapon-result-upgrade">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Corrupted:</span>
+                            <span class="detail-value" id="weapon-result-corrupted">-</span>
                         </div>
 
                     </div>
@@ -850,6 +858,7 @@
             conqueror: [8032.5, 8112.825, 8193.15, 8273.475, 8353.8, 8434.125, 8514.45, 8594.775, 8675.1, 8755.425, 8835.75],
             doombringer: [6300, 6363, 6426, 6489, 6552, 6615, 6678, 6741, 6804, 6867, 6930]
         };
+
 
         const weaponUpgradePerRoll = {
             conqueror: [382.5, 386.325, 390.15, 393.975, 397.8, 401.625, 405.45, 409.275, 413.1, 416.925, 420.75
@@ -938,8 +947,8 @@
 
             document.getElementById('calc-base').textContent = calculatedBase.toFixed(3);
             document.getElementById('base-value').textContent = baseValue.toFixed(3);
-            document.getElementById('difference').textContent = difference.toFixed(3);
-            document.getElementById('deviation').textContent = deviation.toFixed(3) + '%';
+            // document.getElementById('difference').textContent = difference.toFixed(3);
+            // document.getElementById('deviation').textContent = deviation.toFixed(3) + '%';
 
             const corruptedBadge = document.getElementById('armor-corrupted-badge');
             corruptedBadge.style.display = isCorrupted ? 'block' : 'none';
@@ -1022,6 +1031,8 @@
             document.getElementById('weapon-roll-display').textContent = 'Roll ' + detectedRoll;
             document.getElementById('weapon-result-type').textContent = weaponType;
             document.getElementById('result-damage').textContent = currentDamage
+             document.getElementById('weapon-result-upgrade').textContent = '+' + upgradeLevel;
+            document.getElementById('weapon-result-corrupted').textContent = isCorrupted ? 'Yes' : 'No';
 
             const corruptedBadge = document.getElementById('weapon-corrupted-badge');
             corruptedBadge.style.display = isCorrupted ? 'block' : 'none';
