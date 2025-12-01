@@ -943,14 +943,29 @@
             incrementCounter()
         }
 
-        function incrementCounter() {
-            fetch("https://api.countapi.dev/hit/armaduraGeradorV1/cardsGerados")
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById("calculations-made-value").innerText = data.value
-                })
-                .catch(error => console.error("Deu erro aqui ao acessar CountAPI:", error))
+        async function incrementCounter() {
+            const url = "https://api.jsonbin.io/v3/b/692e179643b1c97be9d16ff4";
+            const accessKey = "SUA_API_KEY_AQUI";
 
+            // Obter o valor atual
+            let req = await fetch(url + "/latest", {
+                headers: { "X-Master-Key": accessKey }
+            });
+            let data = await req.json();
+
+            let valorAtual = data.record.cardsGerados + 1;
+
+            // Salvar valor
+            await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": accessKey
+                },
+                body: JSON.stringify({ cardsGerados: valorAtual })
+            });
+
+            document.getElementById("calculations-made-value").innerText = valorAtual;
         }
 
         function calculateRollArmor() {
@@ -1136,7 +1151,7 @@
             });
         });
 
-        
+
     </script>
 </body>
 
