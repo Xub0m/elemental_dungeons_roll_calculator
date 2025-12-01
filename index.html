@@ -662,14 +662,14 @@
         <br>
         <small style="opacity: 1;">Created By Xubom</small>
         <br>
-        <small style="opacity: 0.7;">Version 6.92</small>
+        <small style="opacity: 0.7;">Version 6.93</small>
     </div>
 
-    <div class="calculate-counter">
+    <!-- <div class="calculate-counter">
         <br>
         <small style="opacity: 1;">Calculate Count:</small>
         <br>
-    </div>
+    </div> -->
 
     <div class="container">
 
@@ -716,14 +716,14 @@
 
                 <button class="calculate-btn" onclick="findType('armor-form')">Calculate Roll</button>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <br></br>
                     <div class="checkbox-group">
                         <label id="calculations-made-label" style="margin-bottom: 0;">Calculations Made:
                             <span id="calculations-made-value">0</span>
                         </label>
                     </div>
-                </div>
+                </div> -->
 
             </div>
 
@@ -773,8 +773,9 @@
                 </div>
 
                 <button class="calculate-btn" onclick="findType('weapon-form')">Calculate Roll</button>
+            </div>
 
-                <div class="form-group">
+            <div class="form-group">
                     <br></br>
                     <div class="checkbox-group">
                         <label id="calculations-made-label" style="margin-bottom: 0;">Calculations Made:
@@ -782,8 +783,6 @@
                         </label>
                     </div>
                 </div>
-
-            </div>
 
         </div>
 
@@ -1163,21 +1162,20 @@
                     document.getElementById('weapon-result').classList.remove('show');//*N DEIXA STACKAR
                     document.getElementById("armor-form").classList.remove("hidden");
                     document.getElementById("weapon-form").classList.add("hidden");
-                    window.onload = loadCounterValue;
                 }
 
                 if (selectedTab === "weapon") {
                     document.getElementById('armor-result').classList.remove('show')//*N DEIXA STACKAR
                     document.getElementById("weapon-form").classList.remove("hidden");
                     document.getElementById("armor-form").classList.add("hidden");
-                    window.onload = loadCounterValue;
+                   
                 }
 
                  
             });
         });
 
-        window.onload = loadCounterValue;
+        // window.onload = loadCounterValue;
 
     </script>
 </body>
