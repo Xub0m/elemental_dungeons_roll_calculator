@@ -658,7 +658,7 @@
         <br>
         <small style="opacity: 1;">Created By Xubom</small>
         <br>
-        <small style="opacity: 0.7;">Version 6.95</small>
+        <small style="opacity: 0.7;">Version 6.96</small>
     </div>
 
     <div class="container">
@@ -704,7 +704,7 @@
                     </div>
                 </div>
 
-                   <button class="calculate-btn" onclick="findType('armor-form')">Calculate Roll</button>
+                <button class="calculate-btn" onclick="findType('armor-form')">Calculate Roll</button>
 
             </div>
 
@@ -751,13 +751,13 @@
                     </div>
                 </div>
 
-               <button class="calculate-btn" onclick="findType('weapon-form')">Calculate Roll</button>
+                <button class="calculate-btn" onclick="findType('weapon-form')">Calculate Roll</button>
             </div>
 
             <div class="form-group">
                 <br>
                 <div class="checkbox-group">
-                    <label id="calculations-made-label" style="margin-bottom: 0;">Calculations Made:
+                    <label id="calculations-made-label">Calculations Made:
                         <span id="calculations-made-value">0</span>
                     </label>
                 </div>
@@ -833,6 +833,18 @@
                         <div class="detail-row">
                             <span class="detail-label">Corrupted:</span>
                             <span class="detail-value" id="weapon-result-corrupted">-</span>
+                        </div>
+
+                        <div class="stats-section">
+                            <div class="stats-title">📊 Roll Statistics</div>
+                            <div class="stat-item">
+                                <span class="stat-label">Calculated Base:</span>
+                                <span class="stat-value" id="weapon-calc-base">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Base Value (Roll):</span>
+                                <span class="stat-value" id="weapon-base-value">-</span>
+                            </div>
                         </div>
 
                     </div>
@@ -1089,6 +1101,9 @@
             document.getElementById('result-damage').textContent = currentDamage
             document.getElementById('weapon-result-upgrade').textContent = '+' + upgradeLevel;
             document.getElementById('weapon-result-corrupted').textContent = isCorrupted ? 'Yes' : 'No';
+
+            document.getElementById('weapon-calc-base').textContent = cleanDamage.toFixed(3);
+            document.getElementById('weapon-base-value').textContent = baseValue.toFixed(3);
 
             const corruptedBadge = document.getElementById('weapon-corrupted-badge');
             corruptedBadge.style.display = isCorrupted ? 'block' : 'none';
