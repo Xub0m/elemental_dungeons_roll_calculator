@@ -1559,11 +1559,24 @@
 									<label>Reforge:</label>
 									<select id="reforge-type">
 										<option value="">None</option>
-										<option value="godly">godly</option>
-										<option value="mythical">
-											mythical
-										</option>
-										<option value="vicious">vicious</option>
+										<option value="Vicious">Vicious</option>
+										<option value="Cruel">Cruel</option>
+										<option value="Savage">Savage</option>
+										<option value="Dangerous">Dangerous</option>
+										<option value="Frenzied">Frenzied</option>
+										<option value="Furious">Furious</option>
+										<option value="Legendary">Legendary</option>
+										<option value="Hasty">Hasty</option>
+										<option value="Swift">Swift</option>
+										<option value="Relentless">Relentless</option>
+										<option value="Percise">Percise</option>
+										<option value="Superior">Superior</option>
+										<option value="Godly">Godly</option>
+										<option value="Ruthless">Ruthless</option>
+										<option value="Murderous">Murderous</option>
+										<option value="Mystical">Mystical</option>
+										<option value="Mythical">Mythical</option>
+
 									</select>
 								</div>
 
@@ -2233,9 +2246,23 @@
 				}
 
 				const reforgeMultipliers = {
-					godly: 1.5,
-					mythical: 1.4,
-					vicious: 1.4,
+					Vicious: 1.4,
+					Cruel: 1.3,
+					Savage: 1.1,
+					Dangerous: 1.1,
+					Frenzied: 1.3,
+					Furious: 1.2,
+					Legendary: 1.2,
+					Hasty: 1.1,
+					Swift: 1,
+					Relentless: 1.2,
+					Percise: 1,
+					Superior: 1.2,
+					Godly: 1.5,
+					Ruthless: 1.3,
+					Murderous: 0.9,
+					Mystical: 1.1,
+					Mythical: 1.4,
 				};
 
 				const reforgeMult = reforgeMultipliers[reforgeType] ?? 1;
@@ -2301,46 +2328,46 @@
 			function initTierList() {
 				// Dados dos elementos
 				const rawData = `
-Kitsune	6	10	4	8	3	31
-C Kitsune	8	10	7	10	6	41
-Mech	7	7	3	10	6	33
-C Mech	10	7	7	10	8	42
-Phantom	6	4	6	7	7	30
-C Phantom	8	5	8	7	9	37
-Reaper	8	2	7	6	8	31
-C Reaper	9	3	10	8	11	41
-Galaxy	7	9	4	9	4	33
-C Galaxy	9	9	5	9	7	39
-Dragon	3	3	3	10	2	21
-C Dragon	7	5	7	10	4	33
-Solar	7	2	8	5	8	30
-C Solar	10	2	10	7	10	39
-Darkness	5	6	3	6	4	24
-C darkness	7	7	7	6	7	34
-Krampus	7	7	5	8	6	33
-C Krampus	9	8	7	8	8	40
-Infinity	7	7	5	6	7	31
-C Infinity	8	7	8	7	9	39
-Light	3	4	1	6	2	16
-C light	5	7	2	7	3	24
-Lava	1	4	2	4	2	13
-C lava	4	6	3	5	6	24
-Nature	1	6	1	6	1	15
-C Nature	3	7	2	7	2	21
-Grav	2	1	3	1	3	10
-C Grav	4	2	4	2	6	18
-Lightning	4	5	3	4	4	20
-C Lightning	7	6	6	5	8	32
-C Ice	2	5	2	3	2	14
-C Fire	1	4	1	5	1	12
-Fire	1	3	1	3	1	9
-Nightmare	7	4	7	6	6	30
-C Nightmare	9	5	10	8	9	41
-Bunny	6	7	6	5	8	32
-Angel	7	1	10	8   7	33
-C Angel	7	1	10	8    8	34
-C Smoke	3	3	1	4	3	13
-            `.trim();
+			Kitsune	6	10	4	8	3	31
+			C Kitsune	8	10	7	10	6	41
+			Mech	7	7	3	10	6	33
+			C Mech	10	7	7	10	8	42
+			Phantom	6	4	6	7	7	30
+			C Phantom	8	5	8	7	9	37
+			Reaper	8	2	7	6	8	31
+			C Reaper	9	3	10	8	11	41
+			Galaxy	7	9	4	9	4	33
+			C Galaxy	9	9	5	9	7	39
+			Dragon	3	3	3	10	2	21
+			C Dragon	7	5	7	10	4	33
+			Solar	7	2	8	5	8	30
+			C Solar	10	2	10	7	10	39
+			Darkness	5	6	3	6	4	24
+			C darkness	7	7	7	6	7	34
+			Krampus	7	7	5	8	6	33
+			C Krampus	9	8	7	8	8	40
+			Infinity	7	7	5	6	7	31
+			C Infinity	8	7	8	7	9	39
+			Light	3	4	1	6	2	16
+			C light	5	7	2	7	3	24
+			Lava	1	4	2	4	2	13
+			C lava	4	6	3	5	6	24
+			Nature	1	6	1	6	1	15
+			C Nature	3	7	2	7	2	21
+			Grav	2	1	3	1	3	10
+			C Grav	4	2	4	2	6	18
+			Lightning	4	5	3	4	4	20
+			C Lightning	7	6	6	5	8	32
+			C Ice	2	5	2	3	2	14
+			C Fire	1	4	1	5	1	12
+			Fire	1	3	1	3	1	9
+			Nightmare	7	4	7	6	6	30
+			C Nightmare	9	5	10	8	9	41
+			Bunny	6	7	6	5	8	32
+			Angel	7	1	10	8   7	33
+			C Angel	7	1	10	8    8	34
+			C Smoke	3	3	1	4	3	13
+			            `.trim();
 
 				let items = [];
 
@@ -2395,41 +2422,41 @@ C Smoke	3	3	1	4	3	13
 						.sort((a, b) => b.stats.total - a.stats.total)
 						.map(
 							(item) => `
-                        <div class="value-item">
-                            <div class="item-header">
-                                <div class="item-header-icon">
-                                    <img src="${item.imagePath}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='❓';">
-                                </div>
-                                ${item.name}
-                            </div>
-                            <div class="stats-grid">
-                                <div class="stat-item-tl">
-                                    <span class="stat-label-tl">Early Game</span>
-                                    <span class="stat-value-tl">${item.stats.earlyGame}</span>
-                                </div>
-                                <div class="stat-item-tl">
-                                    <span class="stat-label-tl">End Game</span>
-                                    <span class="stat-value-tl">${item.stats.endGame}</span>
-                                </div>
-                                <div class="stat-item-tl">
-                                    <span class="stat-label-tl">Events/Raids</span>
-                                    <span class="stat-value-tl">${item.stats.eventsRaids}</span>
-                                </div>
-                                <div class="stat-item-tl">
-                                    <span class="stat-label-tl">QoL</span>
-                                    <span class="stat-value-tl">${item.stats.qol}</span>
-                                </div>
-                                <div class="stat-item-tl">
-                                    <span class="stat-label-tl">DPS</span>
-                                    <span class="stat-value-tl">${item.stats.dps}</span>
-                                </div>
-                                <div class="stat-item-tl total-stat">
-                                    <span class="stat-label-tl">TOTAL</span>
-                                    <span class="stat-value-tl">${item.stats.total}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `
+			                        <div class="value-item">
+			                            <div class="item-header">
+			                                <div class="item-header-icon">
+			                                    <img src="${item.imagePath}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='❓';">
+			                                </div>
+			                                ${item.name}
+			                            </div>
+			                            <div class="stats-grid">
+			                                <div class="stat-item-tl">
+			                                    <span class="stat-label-tl">Early Game</span>
+			                                    <span class="stat-value-tl">${item.stats.earlyGame}</span>
+			                                </div>
+			                                <div class="stat-item-tl">
+			                                    <span class="stat-label-tl">End Game</span>
+			                                    <span class="stat-value-tl">${item.stats.endGame}</span>
+			                                </div>
+			                                <div class="stat-item-tl">
+			                                    <span class="stat-label-tl">Events/Raids</span>
+			                                    <span class="stat-value-tl">${item.stats.eventsRaids}</span>
+			                                </div>
+			                                <div class="stat-item-tl">
+			                                    <span class="stat-label-tl">QoL</span>
+			                                    <span class="stat-value-tl">${item.stats.qol}</span>
+			                                </div>
+			                                <div class="stat-item-tl">
+			                                    <span class="stat-label-tl">DPS</span>
+			                                    <span class="stat-value-tl">${item.stats.dps}</span>
+			                                </div>
+			                                <div class="stat-item-tl total-stat">
+			                                    <span class="stat-label-tl">TOTAL</span>
+			                                    <span class="stat-value-tl">${item.stats.total}</span>
+			                                </div>
+			                            </div>
+			                        </div>
+			                    `
 						)
 						.join("");
 				}
@@ -2453,11 +2480,11 @@ C Smoke	3	3	1	4	3	13
 						itemElement.className = "tier-item";
 
 						itemElement.innerHTML = `
-                        <div class="item-image">
-                            <img src="${item.imagePath}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='❓';">
-                        </div>
-                        <div class="item-name">${item.name}</div>
-                    `;
+			                        <div class="item-image">
+			                            <img src="${item.imagePath}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='❓';">
+			                        </div>
+			                        <div class="item-name">${item.name}</div>
+			                    `;
 						tierElement.appendChild(itemElement);
 					});
 
@@ -2485,13 +2512,13 @@ C Smoke	3	3	1	4	3	13
 			const firebaseConfig = {
 				apiKey: "AIzaSyCbboJIDk-GgTvUabEEKVpOYtbC-0UKYJQ",
 				authDomain: "contadoronline-a3c85.firebaseapp.com",
-				databaseURL: "https://contadoronline-a3c85-default-rtdb.firebaseio.com",
+				databaseURL:
+					"https://contadoronline-a3c85-default-rtdb.firebaseio.com",
 				projectId: "contadoronline-a3c85",
 				storageBucket: "contadoronline-a3c85.firebasestorage.app",
 				messagingSenderId: "296386612580",
 				appId: "1:296386612580:web:40f0908dc8c5457b113e71",
 			};
-
 
 			// ============================================
 			// CONTADOR FIREBASE - FÁCIL E FUNCIONAL
