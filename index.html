@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 	<head>
 		<meta charset="UTF-8" />
@@ -1376,6 +1377,10 @@
 				}
 			}
 		</style>
+
+		<!-- Firebase SDK -->
+		<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
 	</head>
 	<body>
 		<div class="monkey-watching">
@@ -1383,7 +1388,7 @@
 			<br />
 			<small style="opacity: 1">Created By Xubom</small>
 			<br />
-			<small style="opacity: 0.7">Version 8.1</small>
+			<small style="opacity: 0.7">Version 8.5</small>
 		</div>
 
 		<div class="online-counter-container">
@@ -2474,368 +2479,191 @@ C Smoke	3	3	1	4	3	13
 			}
 
 			// ============================================
-			// CONTADOR ULTRA EFICIENTE - SÓ ATUALIZA EM ENTRADA/SAÍDA
+			// CONFIGURAÇÃO DO FIREBASE
 			// ============================================
 
+			const firebaseConfig = {
+				apiKey: "AIzaSyCbboJIDk-GgTvUabEEKVpOYtbC-0UKYJQ",
+				authDomain: "contadoronline-a3c85.firebaseapp.com",
+				databaseURL: "https://contadoronline-a3c85-default-rtdb.firebaseio.com",
+				projectId: "contadoronline-a3c85",
+				storageBucket: "contadoronline-a3c85.firebasestorage.app",
+				messagingSenderId: "296386612580",
+				appId: "1:296386612580:web:40f0908dc8c5457b113e71",
+			};
+
+
 			// ============================================
-			// CONTADOR CORRIGIDO - USA SESSIONSTORAGE
+			// CONTADOR FIREBASE - FÁCIL E FUNCIONAL
 			// ============================================
+			class FirebaseOnlineCounter {
+				constructor() {
+					// Inicializar Firebase
+					firebase.initializeApp(firebaseConfig);
+					this.db = firebase.database();
 
-			// CONFIGURAÇÃO DO JSONBIN
-			const BIN_ID = "692e179643b1c97be9d16ff4";
-			const MASTER_KEY =
-				"$2a$10$P1O16rB3q/nFoJ4xEzTPuecx4GCRmIH.7hbauOhh1iLcdsqGs7f5q";
-			const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+					// IDs
+					this.userId = this.generateUserId();
+					this.userRef = this.db.ref("onlineUsers/" + this.userId);
+					this.countRef = this.db.ref("onlineCount");
 
-			// ID único PERSISTENTE por sessão (não muda no reload)
-			let userId = sessionStorage.getItem("zeusUserId");
-			if (!userId) {
-				userId =
-					"user_" +
-					Date.now() +
-					"_" +
-					Math.random().toString(36).substr(2, 9);
-				sessionStorage.setItem("zeusUserId", userId);
-				console.log("🆕 Novo usuário:", userId);
-			} else {
-				console.log("↩️ Usuário existente:", userId);
-			}
+					// Estado
+					this.isOnline = false;
 
-			// Elementos DOM
-			const onlineCountElement = document.getElementById("onlineCount");
-
-			// ANIMAÇÕES (mantenha as mesmas)
-			function animateIncrement() {
-				onlineCountElement.classList.remove("decrement");
-				onlineCountElement.classList.add("increment");
-				setTimeout(
-					() => onlineCountElement.classList.remove("increment"),
-					500
-				);
-			}
-
-			function animateDecrement() {
-				onlineCountElement.classList.remove("increment");
-				onlineCountElement.classList.add("decrement");
-				setTimeout(
-					() => onlineCountElement.classList.remove("decrement"),
-					500
-				);
-			}
-
-			// 1. VERIFICAR SE JÁ ESTÁ ONLINE
-			async function checkIfAlreadyOnline() {
-				try {
-					const response = await fetch(`${API_URL}/latest`, {
-						headers: { "X-Master-Key": MASTER_KEY },
-					});
-
-					if (!response.ok) return false;
-
-					const data = await response.json();
-					const sessions = data.record?.activeSessions || [];
-
-					// Verificar se este userId já está na lista
-					const isAlreadyOnline = sessions.includes(userId);
-					console.log("🔍 Já está online?", isAlreadyOnline);
-
-					return isAlreadyOnline;
-				} catch (error) {
-					console.log("⚠️ Erro ao verificar status");
-					return false;
+					// Iniciar
+					this.init();
 				}
-			}
 
-			// 2. ENTRADA (+1) - APENAS SE NÃO ESTIVER ONLINE
-			async function userJoined() {
-				try {
-					// Primeiro verificar se já está online
-					const isAlreadyOnline = await checkIfAlreadyOnline();
+				generateUserId() {
+					// ID único baseado em navegador + timestamp
+					const fingerprint = [
+						navigator.userAgent,
+						navigator.language,
+						screen.width,
+						screen.height,
+						new Date().getDate(),
+					].join("|");
 
-					if (isAlreadyOnline) {
-						console.log("✅ Já estava online, mantendo status");
-						return false; // Não incrementar
+					let hash = 0;
+					for (let i = 0; i < fingerprint.length; i++) {
+						hash = (hash << 5) - hash + fingerprint.charCodeAt(i);
+						hash |= 0;
 					}
 
-					console.log("👤 Novo usuário entrando...");
-
-					// Obter dados atuais
-					const response = await fetch(`${API_URL}/latest`, {
-						headers: { "X-Master-Key": MASTER_KEY },
-					});
-
-					if (!response.ok) throw new Error("API error");
-
-					const data = await response.json();
-					const record = data.record || {};
-
-					// Inicializar contadores se não existirem
-					const onlineNow = record.onlineNow || 0;
-					const sessions = record.activeSessions || [];
-
-					// Adicionar à lista de sessões ativas
-					if (!sessions.includes(userId)) {
-						sessions.push(userId);
-					}
-
-					// Incrementar contador
-					const newCount = onlineNow + 1;
-
-					// Salvar no JSONBin
-					await fetch(API_URL, {
-						method: "PUT",
-						headers: {
-							"Content-Type": "application/json",
-							"X-Master-Key": MASTER_KEY,
-						},
-						body: JSON.stringify({
-							...record,
-							onlineNow: newCount,
-							activeSessions: sessions,
-							lastJoin: Date.now(),
-							totalVisits: (record.totalVisits || 0) + 1,
-							cardsGerados: record.cardsGerados || 0,
-						}),
-					});
-
-					// Atualizar display
-					onlineCountElement.textContent = newCount;
-					animateIncrement();
-
-					console.log(`✅ Entrou! Online: ${newCount}`);
-					sessionStorage.setItem("zeusOnlineStatus", "true");
-
-					return true;
-				} catch (error) {
-					console.log("⚠️ Erro ao entrar, usando cache");
-					// Valor razoável como fallback
-					const cached =
-						localStorage.getItem("onlineCache") ||
-						Math.floor(Math.random() * 10) + 5;
-					onlineCountElement.textContent = cached;
-					return false;
-				}
-			}
-
-			// 3. SAÍDA (-1) - FUNÇÃO MELHORADA
-			async function userLeft() {
-				try {
-					// Verificar se realmente estava online
-					const wasOnline =
-						sessionStorage.getItem("zeusOnlineStatus") === "true";
-					if (!wasOnline) {
-						console.log("ℹ️ Não estava online, ignorando saída");
-						return;
-					}
-
-					console.log("👤 Usuário saindo...");
-
-					// Obter dados atuais
-					const response = await fetch(`${API_URL}/latest`, {
-						headers: { "X-Master-Key": MASTER_KEY },
-					});
-
-					if (!response.ok) return;
-
-					const data = await response.json();
-					const record = data.record || {};
-
-					const onlineNow = record.onlineNow || 0;
-					let sessions = record.activeSessions || [];
-
-					// Remover este usuário da lista
-					sessions = sessions.filter((id) => id !== userId);
-
-					// Decrementar contador (não deixar negativo)
-					const newCount = Math.max(0, onlineNow - 1);
-
-					// Salvar atualização
-					await fetch(API_URL, {
-						method: "PUT",
-						headers: {
-							"Content-Type": "application/json",
-							"X-Master-Key": MASTER_KEY,
-						},
-						body: JSON.stringify({
-							...record,
-							onlineNow: newCount,
-							activeSessions: sessions,
-							lastLeave: Date.now(),
-							cardsGerados: record.cardsGerados || 0,
-						}),
-					});
-
-					console.log(`✅ Saiu! Online: ${newCount}`);
-
-					// Limpar status
-					sessionStorage.removeItem("zeusOnlineStatus");
-				} catch (error) {
-					console.log("⚠️ Não foi possível atualizar saída");
-				}
-			}
-
-			// 4. CARREGAR CONTADOR ATUAL (otimizado)
-			async function loadCurrentCount() {
-				// Cache local de 5 minutos
-				const cacheKey = "zeusOnlineCache";
-				const cache = JSON.parse(
-					localStorage.getItem(cacheKey) || "{}"
-				);
-				const now = Date.now();
-				const FIVE_MINUTES = 300000;
-
-				if (cache.timestamp && now - cache.timestamp < FIVE_MINUTES) {
-					onlineCountElement.textContent = cache.count;
-					return cache.count;
+					return "user_" + Math.abs(hash).toString(36);
 				}
 
-				try {
-					const response = await fetch(`${API_URL}/latest`, {
-						headers: { "X-Master-Key": MASTER_KEY },
-					});
+				async init() {
+					console.log("🚀 Iniciando Firebase Counter...");
+					console.log("👤 User ID:", this.userId);
 
-					const data = await response.json();
-					const count = data.record?.onlineNow || 0;
+					// 1. Marcar como online
+					await this.join();
 
-					// Atualizar cache
-					localStorage.setItem(
-						cacheKey,
-						JSON.stringify({
-							count: count,
-							timestamp: now,
-						})
-					);
+					// 2. Configurar remoção automática ao sair
+					this.setupDisconnect();
 
-					onlineCountElement.textContent = count;
-					return count;
-				} catch (error) {
-					// Usar cache mesmo que expirado
-					onlineCountElement.textContent = cache.count || "?";
-					return cache.count;
+					// 3. Ouvir contador em tempo real
+					this.listenToCount();
+
+					// 4. Manter conexão ativa
+					this.keepAlive();
 				}
-			}
 
-			// 5. LIMPEZA AUTOMÁTICA DE SESSÕES FANTASMAS
-			async function cleanupSessions() {
-				try {
-					const response = await fetch(`${API_URL}/latest`, {
-						headers: { "X-Master-Key": MASTER_KEY },
-					});
-
-					const data = await response.json();
-					const record = data.record || {};
-					let sessions = record.activeSessions || [];
-					const now = Date.now();
-					const TEN_MINUTES = 600000;
-
-					// Filtrar sessões muito antigas
-					const originalCount = sessions.length;
-
-					// Neste sistema simples, não temos timestamp por sessão
-					// Então limpamos sessões aleatoriamente para simular
-					if (sessions.length > 50) {
-						// Se tiver muitas sessões
-						sessions = sessions.slice(0, 30); // Mantém apenas 30
-						console.log("🧹 Limpando sessões antigas");
-					}
-
-					if (sessions.length !== originalCount) {
-						await fetch(API_URL, {
-							method: "PUT",
-							headers: {
-								"Content-Type": "application/json",
-								"X-Master-Key": MASTER_KEY,
-							},
-							body: JSON.stringify({
-								...record,
-								activeSessions: sessions,
-								onlineNow: sessions.length,
-							}),
+				async join() {
+					try {
+						// Marcar presença
+						await this.userRef.set({
+							joinedAt: firebase.database.ServerValue.TIMESTAMP,
+							userAgent: navigator.userAgent.substring(0, 100),
+							lastSeen: firebase.database.ServerValue.TIMESTAMP,
 						});
+
+						this.isOnline = true;
+						console.log("✅ Online!");
+					} catch (error) {
+						console.error("❌ Erro ao entrar:", error);
 					}
-				} catch (error) {
-					// Ignorar erros
-				}
-			}
-
-			// 6. SISTEMA PRINCIPAL
-			async function initOnlineSystem() {
-				console.log("🚀 Iniciando sistema online...");
-
-				// Carregar contador atual
-				const currentCount = await loadCurrentCount();
-				onlineCountElement.textContent = currentCount;
-
-				// Verificar se já está online
-				const isOnline = await checkIfAlreadyOnline();
-
-				if (!isOnline) {
-					// Se não estiver online, entrar
-					await userJoined();
-				} else {
-					console.log("🔄 Usuário já está online, mantendo contador");
-					// Atualizar status
-					sessionStorage.setItem("zeusOnlineStatus", "true");
 				}
 
-				// Configurar saída
-				setupExitHandlers();
+				setupDisconnect() {
+					// Firebase remove automaticamente quando usuário sai
+					this.userRef.onDisconnect().remove();
 
-				// Limpeza ocasional (1x por hora)
-				setInterval(cleanupSessions, 3600000);
+					// Também configurar eventos do navegador
+					window.addEventListener("beforeunload", () => this.leave());
+					window.addEventListener("pagehide", () => this.leave());
+				}
 
-				// Atualizar contador visual (apenas cache, 5 minutos)
-				setInterval(loadCurrentCount, 300000);
-			}
+				async leave() {
+					if (!this.isOnline) return;
 
-			// 7. HANDLERS DE SAÍDA MELHORADOS
-			function setupExitHandlers() {
-				let exitCalled = false;
+					try {
+						await this.userRef.remove();
+						this.isOnline = false;
+						console.log("👋 Saiu!");
+					} catch (error) {
+						console.error("❌ Erro ao sair:", error);
+					}
+				}
 
-				function performExit() {
-					if (exitCalled) return;
-					exitCalled = true;
-
-					userLeft();
-
-					// Usar sendBeacon para tentar garantir a requisição
-					const data = new Blob(
-						[JSON.stringify({ userId: userId, action: "leave" })],
-						{
-							type: "application/json",
+				listenToCount() {
+					// Ouvir mudanças no número de usuários online
+					this.db.ref("onlineUsers").on("value", (snapshot) => {
+						if (snapshot.exists()) {
+							const count = snapshot.numChildren();
+							this.updateDisplay(count);
+						} else {
+							this.updateDisplay(0);
 						}
-					);
+					});
+				}
 
-					if (navigator.sendBeacon) {
-						navigator.sendBeacon(`${API_URL}/latest`, data);
+				updateDisplay(count) {
+					const element = document.getElementById("onlineCount");
+					const current = parseInt(element.textContent) || 0;
+
+					element.textContent = count;
+
+					// Animação de mudança
+					if (count > current) {
+						element.classList.add("increment");
+						setTimeout(
+							() => element.classList.remove("increment"),
+							500
+						);
 					}
 				}
 
-				// Eventos de saída
-				window.addEventListener("beforeunload", performExit);
-				window.addEventListener("pagehide", performExit);
-				window.addEventListener("unload", performExit);
-
-				// Quando muda de aba (visibility change)
-				document.addEventListener("visibilitychange", () => {
-					if (document.visibilityState === "hidden") {
-						// Não fazer saída imediata quando muda de aba
-						// Só marca como possível saída
-						setTimeout(() => {
-							if (document.visibilityState === "hidden") {
-								performExit();
-							}
-						}, 30000); // 30 segundos após ficar oculto
-					}
-				});
+				keepAlive() {
+					// Atualizar lastSeen a cada 30 segundos
+					setInterval(() => {
+						if (this.isOnline) {
+							this.userRef.update({
+								lastSeen:
+									firebase.database.ServerValue.TIMESTAMP,
+							});
+						}
+					}, 30000);
+				}
 			}
 
-			// 8. INICIAR TUDO
-			document.addEventListener("DOMContentLoaded", function () {
-				// Pequeno delay para evitar conflitos
-				setTimeout(initOnlineSystem, 1000);
+			// ============================================
+			// INICIAR TUDO
+			// ============================================
+			document.addEventListener("DOMContentLoaded", () => {
+				// Pequeno delay para carregar a página
+				setTimeout(() => {
+					try {
+						window.firebaseCounter = new FirebaseOnlineCounter();
+					} catch (error) {
+						console.error("❌ Falha ao iniciar Firebase:", error);
+						document.getElementById("onlineCount").textContent =
+							"~";
+					}
+				}, 1000);
 			});
 
+			// ============================================
+			// FUNÇÕES ÚTEIS PARA DEBUG
+			// ============================================
+			window.debugFirebase = function () {
+				if (!window.firebaseCounter) {
+					console.log("❌ Counter não iniciado");
+					return;
+				}
+
+				console.log("=== DEBUG FIREBASE ===");
+				console.log("User ID:", window.firebaseCounter.userId);
+				console.log("Is Online:", window.firebaseCounter.isOnline);
+
+				// Ver contador atual
+				window.firebaseCounter.db
+					.ref("onlineCount")
+					.once("value")
+					.then((snap) => console.log("Online Count:", snap.val()))
+					.catch((err) => console.error("Error:", err));
+			};
 		</script>
 	</body>
 </html>
