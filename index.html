@@ -1388,7 +1388,7 @@
 			<br />
 			<small style="opacity: 1">Created By Xubom</small>
 			<br />
-			<small style="opacity: 0.7">Version 10.0</small>
+			<small style="opacity: 0.7">Version 10.5</small>
 		</div>
 
 		<div class="online-counter-container">
@@ -1562,21 +1562,38 @@
 										<option value="Vicious">Vicious</option>
 										<option value="Cruel">Cruel</option>
 										<option value="Savage">Savage</option>
-										<option value="Dangerous">Dangerous</option>
-										<option value="Frenzied">Frenzied</option>
+										<option value="Dangerous">
+											Dangerous
+										</option>
+										<option value="Frenzied">
+											Frenzied
+										</option>
 										<option value="Furious">Furious</option>
-										<option value="Legendary">Legendary</option>
+										<option value="Legendary">
+											Legendary
+										</option>
 										<option value="Hasty">Hasty</option>
 										<option value="Swift">Swift</option>
-										<option value="Relentless">Relentless</option>
+										<option value="Relentless">
+											Relentless
+										</option>
 										<option value="Percise">Percise</option>
-										<option value="Superior">Superior</option>
+										<option value="Superior">
+											Superior
+										</option>
 										<option value="Godly">Godly</option>
-										<option value="Ruthless">Ruthless</option>
-										<option value="Murderous">Murderous</option>
-										<option value="Mystical">Mystical</option>
-										<option value="Mythical">Mythical</option>
-
+										<option value="Ruthless">
+											Ruthless
+										</option>
+										<option value="Murderous">
+											Murderous
+										</option>
+										<option value="Mystical">
+											Mystical
+										</option>
+										<option value="Mythical">
+											Mythical
+										</option>
 									</select>
 								</div>
 
@@ -2536,174 +2553,223 @@ C Air	1	2	1	1	2	7
 			// ============================================
 			// CONTADOR FIREBASE - FÁCIL E FUNCIONAL
 			// ============================================
+			// class FirebaseOnlineCounter {
+			// 	constructor() {
+			// 		// Inicializar Firebase
+			// 		firebase.initializeApp(firebaseConfig);
+			// 		this.db = firebase.database();
+
+			// 		// IDs
+			// 		this.userId = this.generateUserId();
+			// 		this.userRef = this.db.ref("onlineUsers/" + this.userId);
+			// 		this.countRef = this.db.ref("onlineCount");
+
+			// 		// Estado
+			// 		this.isOnline = false;
+
+			// 		// Iniciar
+			// 		this.init();
+			// 	}
+
+			// 	generateUserId() {
+			// 		// ID único baseado em navegador + timestamp
+			// 		const fingerprint = [
+			// 			navigator.userAgent,
+			// 			navigator.language,
+			// 			screen.width,
+			// 			screen.height,
+			// 			new Date().getDate(),
+			// 		].join("|");
+
+			// 		let hash = 0;
+			// 		for (let i = 0; i < fingerprint.length; i++) {
+			// 			hash = (hash << 5) - hash + fingerprint.charCodeAt(i);
+			// 			hash |= 0;
+			// 		}
+
+			// 		return "user_" + Math.abs(hash).toString(36);
+			// 	}
+
+			// 	async init() {
+			// 		console.log("🚀 Iniciando Firebase Counter...");
+			// 		console.log("👤 User ID:", this.userId);
+
+			// 		// 1. Marcar como online
+			// 		await this.join();
+
+			// 		// 2. Configurar remoção automática ao sair
+			// 		this.setupDisconnect();
+
+			// 		// 3. Ouvir contador em tempo real
+			// 		this.listenToCount();
+
+			// 		// 4. Manter conexão ativa
+			// 		this.keepAlive();
+			// 	}
+
+			// 	async join() {
+			// 		try {
+			// 			// Marcar presença
+			// 			await this.userRef.set({
+			// 				joinedAt: firebase.database.ServerValue.TIMESTAMP,
+			// 				userAgent: navigator.userAgent.substring(0, 100),
+			// 				lastSeen: firebase.database.ServerValue.TIMESTAMP,
+			// 			});
+
+			// 			this.isOnline = true;
+			// 			console.log("✅ Online!");
+			// 		} catch (error) {
+			// 			console.error("❌ Erro ao entrar:", error);
+			// 		}
+			// 	}
+
+			// 	setupDisconnect() {
+			// 		// Firebase remove automaticamente quando usuário sai
+			// 		this.userRef.onDisconnect().remove();
+
+			// 		// Também configurar eventos do navegador
+			// 		window.addEventListener("beforeunload", () => this.leave());
+			// 		window.addEventListener("pagehide", () => this.leave());
+			// 	}
+
+			// 	async leave() {
+			// 		if (!this.isOnline) return;
+
+			// 		try {
+			// 			await this.userRef.remove();
+			// 			this.isOnline = false;
+			// 			console.log("👋 Saiu!");
+			// 		} catch (error) {
+			// 			console.error("❌ Erro ao sair:", error);
+			// 		}
+			// 	}
+
+			// 	listenToCount() {
+			// 		// Ouvir mudanças no número de usuários online
+			// 		this.db.ref("onlineUsers").on("value", (snapshot) => {
+			// 			if (snapshot.exists()) {
+			// 				const count = snapshot.numChildren();
+			// 				this.updateDisplay(count);
+			// 			} else {
+			// 				this.updateDisplay(0);
+			// 			}
+			// 		});
+			// 	}
+
+			// 	updateDisplay(count) {
+			// 		const element = document.getElementById("onlineCount");
+			// 		const current = parseInt(element.textContent) || 0;
+
+			// 		element.textContent = count;
+
+			// 		// Animação de mudança
+			// 		if (count > current) {
+			// 			element.classList.add("increment");
+			// 			setTimeout(
+			// 				() => element.classList.remove("increment"),
+			// 				500
+			// 			);
+			// 		}
+			// 	}
+
+			// 	keepAlive() {
+			// 		// Atualizar lastSeen a cada 30 segundos
+			// 		setInterval(() => {
+			// 			if (this.isOnline) {
+			// 				this.userRef.update({
+			// 					lastSeen:
+			// 						firebase.database.ServerValue.TIMESTAMP,
+			// 				});
+			// 			}
+			// 		}, 30000);
+			// 	}
+			// }
 			class FirebaseOnlineCounter {
 				constructor() {
-					// Inicializar Firebase
 					firebase.initializeApp(firebaseConfig);
 					this.db = firebase.database();
-
-					// IDs
-					this.userId = this.generateUserId();
-					this.userRef = this.db.ref("onlineUsers/" + this.userId);
-					this.countRef = this.db.ref("onlineCount");
-
-					// Estado
+					this.userRef = this.db.ref("onlineUsers").push();
 					this.isOnline = false;
 
-					// Iniciar
 					this.init();
 				}
 
-				generateUserId() {
-					// ID único baseado em navegador + timestamp
-					const fingerprint = [
-						navigator.userAgent,
-						navigator.language,
-						screen.width,
-						screen.height,
-						new Date().getDate(),
-					].join("|");
-
-					let hash = 0;
-					for (let i = 0; i < fingerprint.length; i++) {
-						hash = (hash << 5) - hash + fingerprint.charCodeAt(i);
-						hash |= 0;
-					}
-
-					return "user_" + Math.abs(hash).toString(36);
-				}
-
-				async init() {
-					console.log("🚀 Iniciando Firebase Counter...");
-					console.log("👤 User ID:", this.userId);
-
-					// 1. Marcar como online
-					await this.join();
-
-					// 2. Configurar remoção automática ao sair
-					this.setupDisconnect();
-
-					// 3. Ouvir contador em tempo real
+				init() {
+					this.setupPresence();
 					this.listenToCount();
-
-					// 4. Manter conexão ativa
-					this.keepAlive();
 				}
 
-				async join() {
-					try {
-						// Marcar presença
-						await this.userRef.set({
-							joinedAt: firebase.database.ServerValue.TIMESTAMP,
-							userAgent: navigator.userAgent.substring(0, 100),
-							lastSeen: firebase.database.ServerValue.TIMESTAMP,
-						});
+				setupPresence() {
+					const connectedRef = this.db.ref(".info/connected");
 
-						this.isOnline = true;
-						console.log("✅ Online!");
-					} catch (error) {
-						console.error("❌ Erro ao entrar:", error);
-					}
-				}
+					connectedRef.on("value", (snap) => {
+						if (snap.val() === true) {
+							this.userRef.onDisconnect().remove();
 
-				setupDisconnect() {
-					// Firebase remove automaticamente quando usuário sai
-					this.userRef.onDisconnect().remove();
+							this.userRef.set({
+								joinedAt:
+									firebase.database.ServerValue.TIMESTAMP,
+								userAgent: navigator.userAgent.substring(0, 80),
+							});
 
-					// Também configurar eventos do navegador
-					window.addEventListener("beforeunload", () => this.leave());
-					window.addEventListener("pagehide", () => this.leave());
-				}
-
-				async leave() {
-					if (!this.isOnline) return;
-
-					try {
-						await this.userRef.remove();
-						this.isOnline = false;
-						console.log("👋 Saiu!");
-					} catch (error) {
-						console.error("❌ Erro ao sair:", error);
-					}
-				}
-
-				listenToCount() {
-					// Ouvir mudanças no número de usuários online
-					this.db.ref("onlineUsers").on("value", (snapshot) => {
-						if (snapshot.exists()) {
-							const count = snapshot.numChildren();
-							this.updateDisplay(count);
-						} else {
-							this.updateDisplay(0);
+							this.isOnline = true;
+							console.log("🟢 Online");
 						}
 					});
 				}
 
-				updateDisplay(count) {
-					const element = document.getElementById("onlineCount");
-					const current = parseInt(element.textContent) || 0;
-
-					element.textContent = count;
-
-					// Animação de mudança
-					if (count > current) {
-						element.classList.add("increment");
-						setTimeout(
-							() => element.classList.remove("increment"),
-							500
-						);
-					}
+				listenToCount() {
+					this.db.ref("onlineUsers").on("value", (snapshot) => {
+						const count = snapshot.numChildren();
+						this.updateDisplay(count);
+					});
 				}
 
-				keepAlive() {
-					// Atualizar lastSeen a cada 30 segundos
-					setInterval(() => {
-						if (this.isOnline) {
-							this.userRef.update({
-								lastSeen:
-									firebase.database.ServerValue.TIMESTAMP,
-							});
-						}
-					}, 30000);
+				updateDisplay(count) {
+					const el = document.getElementById("onlineCount");
+					if (!el) return;
+					el.textContent = count;
 				}
 			}
 
 			// ============================================
 			// INICIAR TUDO
 			// ============================================
+
 			document.addEventListener("DOMContentLoaded", () => {
 				// Pequeno delay para carregar a página
-				setTimeout(() => {
-					try {
-						window.firebaseCounter = new FirebaseOnlineCounter();
-					} catch (error) {
-						console.error("❌ Falha ao iniciar Firebase:", error);
-						document.getElementById("onlineCount").textContent =
-							"~";
-					}
-				}, 1000);
+				// setTimeout(() => {
+				// 	try {
+				// 		window.firebaseCounter = new FirebaseOnlineCounter();
+				// 	} catch (error) {
+				// 		console.error("❌ Falha ao iniciar Firebase:", error);
+				// 		document.getElementById("onlineCount").textContent =
+				// 			"~";
+				// 	}
+				// }, 1000);
+				new FirebaseOnlineCounter();
 			});
 
-			// ============================================
-			// FUNÇÕES ÚTEIS PARA DEBUG
-			// ============================================
-			window.debugFirebase = function () {
-				if (!window.firebaseCounter) {
-					console.log("❌ Counter não iniciado");
-					return;
-				}
+			// // ============================================
+			// // FUNÇÕES ÚTEIS PARA DEBUG
+			// // ============================================
+			// window.debugFirebase = function () {
+			// 	if (!window.firebaseCounter) {
+			// 		console.log("❌ Counter não iniciado");
+			// 		return;
+			// 	}
 
-				console.log("=== DEBUG FIREBASE ===");
-				console.log("User ID:", window.firebaseCounter.userId);
-				console.log("Is Online:", window.firebaseCounter.isOnline);
+			// 	console.log("=== DEBUG FIREBASE ===");
+			// 	console.log("User ID:", window.firebaseCounter.userId);
+			// 	console.log("Is Online:", window.firebaseCounter.isOnline);
 
-				// Ver contador atual
-				window.firebaseCounter.db
-					.ref("onlineCount")
-					.once("value")
-					.then((snap) => console.log("Online Count:", snap.val()))
-					.catch((err) => console.error("Error:", err));
-			};
+			// 	// Ver contador atual
+			// 	window.firebaseCounter.db
+			// 		.ref("onlineCount")
+			// 		.once("value")
+			// 		.then((snap) => console.log("Online Count:", snap.val()))
+			// 		.catch((err) => console.error("Error:", err));
+			// };
 		</script>
 	</body>
 </html>
