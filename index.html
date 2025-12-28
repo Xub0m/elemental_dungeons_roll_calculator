@@ -1388,7 +1388,7 @@
 			<br />
 			<small style="opacity: 1">Created By Xubom</small>
 			<br />
-			<small style="opacity: 0.7">Version 10.9</small>
+			<small id="projectVersion" style="opacity: 0.7"> Version -- </small>
 		</div>
 
 		<div class="online-counter-container">
@@ -1414,6 +1414,10 @@
 				<a href="#" class="nav-item" data-page="tierlist">
 					<div class="nav-icon">🏆</div>
 					<div class="nav-label">Tier List</div>
+				</a>
+				<a href="#" class="nav-item" data-page=null>
+					<div class="nav-icon">❌</div>
+					<div class="nav-label">Soon</div>
 				</a>
 			</div>
 
@@ -1912,7 +1916,19 @@
 		</div>
 
 		<script>
-			// ============================================
+			const PROJECT_VERSION = 10.10;
+
+			document.addEventListener("DOMContentLoaded", () => {
+				const el = document.getElementById("projectVersion");
+				if (el) {
+					el.textContent = `Version ${PROJECT_VERSION}`;
+				}
+			});
+
+			let alreadyReloaded = false;
+
+			// ==============
+			// ==============================
 			// NAVEGAÇÃO ENTRE PÁGINAS
 			// ============================================
 			document.addEventListener("DOMContentLoaded", function () {
@@ -2550,7 +2566,6 @@ C Air	1	2	1	1	2	7
 				appId: "1:296386612580:web:40f0908dc8c5457b113e71",
 			};
 
-			
 			class FirebaseOnlineCounter {
 				constructor() {
 					firebase.initializeApp(firebaseConfig);
@@ -2564,6 +2579,7 @@ C Air	1	2	1	1	2	7
 				init() {
 					this.setupPresence();
 					this.listenToCount();
+					this.watchProjectVersion(this.db);
 				}
 
 				setupPresence() {
@@ -2597,6 +2613,35 @@ C Air	1	2	1	1	2	7
 					if (!el) return;
 					el.textContent = count;
 				}
+
+				watchProjectVersion(db) {
+					const versionRef = db.ref("config/projectVersion");
+
+					versionRef.on("value", (snap) => {
+						const remoteVersion = snap.val();
+
+						if (!remoteVersion) return;
+
+						if (
+							remoteVersion !== PROJECT_VERSION &&
+							!alreadyReloaded
+						) {
+							console.warn(
+								"🔄 Versão desatualizada detectada:",
+								PROJECT_VERSION,
+								"→",
+								remoteVersion
+							);
+
+							alreadyReloaded = true;
+
+							// pequeno delay para evitar race condition
+							setTimeout(() => {
+								location.reload();
+							}, 500);
+						}
+					});
+				}
 			}
 
 			// ============================================
@@ -2606,7 +2651,6 @@ C Air	1	2	1	1	2	7
 			document.addEventListener("DOMContentLoaded", () => {
 				new FirebaseOnlineCounter();
 			});
-
 		</script>
 	</body>
 </html>
