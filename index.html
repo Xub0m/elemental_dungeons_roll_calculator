@@ -1388,7 +1388,7 @@
 			<br />
 			<small style="opacity: 1">Created By Xubom</small>
 			<br />
-			<small style="opacity: 0.7">Version 10.5</small>
+			<small style="opacity: 0.7">Version 10.6</small>
 		</div>
 
 		<div class="online-counter-container">
@@ -2555,7 +2555,7 @@ C Air	1	2	1	1	2	7
 				constructor() {
 					firebase.initializeApp(firebaseConfig);
 					this.db = firebase.database();
-					this.userRef = this.db.ref("onlineUsers").push();
+					this.userRef = this.db.ref("onlineUsers_v2").push();
 					this.isOnline = false;
 
 					this.init();
@@ -2586,7 +2586,7 @@ C Air	1	2	1	1	2	7
 				}
 
 				listenToCount() {
-					this.db.ref("onlineUsers").on("value", (snapshot) => {
+					this.db.ref("onlineUsers_v2").on("value", (snapshot) => {
 						const count = snapshot.numChildren();
 						this.updateDisplay(count);
 					});
