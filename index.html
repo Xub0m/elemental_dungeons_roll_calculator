@@ -1388,7 +1388,7 @@
 			<br />
 			<small style="opacity: 1">Created By Xubom</small>
 			<br />
-			<small style="opacity: 0.7">Version 10.8</small>
+			<small style="opacity: 0.7">Version 10.9</small>
 		</div>
 
 		<div class="online-counter-container">
@@ -1912,8 +1912,6 @@
 		</div>
 
 		<script>
-			const PRESENCE_VERSION = 2;
-			console.log(PRESENCE_VERSION)
 			// ============================================
 			// NAVEGAÇÃO ENTRE PÁGINAS
 			// ============================================
@@ -2552,6 +2550,7 @@ C Air	1	2	1	1	2	7
 				appId: "1:296386612580:web:40f0908dc8c5457b113e71",
 			};
 
+			
 			class FirebaseOnlineCounter {
 				constructor() {
 					firebase.initializeApp(firebaseConfig);
@@ -2575,7 +2574,6 @@ C Air	1	2	1	1	2	7
 							this.userRef.onDisconnect().remove();
 
 							this.userRef.set({
-								version: PRESENCE_VERSION,
 								joinedAt:
 									firebase.database.ServerValue.TIMESTAMP,
 								userAgent: navigator.userAgent.substring(0, 80),
@@ -2583,14 +2581,6 @@ C Air	1	2	1	1	2	7
 
 							this.isOnline = true;
 							console.log("🟢 Online");
-
-
-							// 👇 verificação de versão
-							this.userRef.on("value", s => {
-								if (s.exists() && s.val().version !== PRESENCE_VERSION) {
-									location.reload();
-								}
-							});
 						}
 					});
 				}
@@ -2616,6 +2606,7 @@ C Air	1	2	1	1	2	7
 			document.addEventListener("DOMContentLoaded", () => {
 				new FirebaseOnlineCounter();
 			});
+
 		</script>
 	</body>
 </html>
